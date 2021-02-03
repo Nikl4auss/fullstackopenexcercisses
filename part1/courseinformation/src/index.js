@@ -2,25 +2,28 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 const App = () => {
-  const course = "Half Stack application development";
-  const part1 = "Fundamentals of React";
-  const exercises1 = 10;
-  const part2 = "Using props to pass data";
-  const exercises2 = 7;
-  const part3 = "State of a component";
-  const exercises3 = 14;
-
+  const course = {
+    name: "Half Stack application development",
+    parts: [
+      {
+        name: "Fundamentals of React",
+        exercise: 10,
+      },
+      {
+        name: "Using props to pass data",
+        exercise: 7,
+      },
+      {
+        name: "State of a component",
+        exercise: 14,
+      },
+    ],
+  };
   return (
     <>
-      <Header course={course} />
-      <Content
-        parts={[
-          { title: part1, exercise: exercises1 },
-          { title: part2, exercise: exercises2 },
-          { title: part3, exercise: exercises3 },
-        ]}
-      />
-      <Total exercises={[exercises1, exercises2, exercises3]} />
+      <Header course={course.name} />
+      <Content parts={course.parts} />
+      <Total exercises={course.parts.map((part) => part.exercise)} />
     </>
   );
 };
@@ -33,11 +36,10 @@ const Content = ({ parts }) => {
   return (
     <>
       {parts.map((part) => {
-        const { title, exercise } = part;
-        console.log(parts.indexOf(part) + 1);
+        const { name, exercise } = part;
         return (
           <>
-            <Part key={title} title={title} exercise={exercise} />
+            <Part key={name} name={name} exercise={exercise} />
           </>
         );
       })}
@@ -46,14 +48,15 @@ const Content = ({ parts }) => {
 };
 
 const Total = ({ exercises }) => {
+  console.log(exercises);
   const total = exercises.reduce((acc, element) => acc + element);
   return <h3>Total exercises: {total}</h3>;
 };
 
-const Part = ({ title, exercise }) => {
+const Part = ({ name, exercise }) => {
   return (
     <>
-      <h2>{title}</h2>
+      <h2>{name}</h2>
       <p>Exercises: {exercise}</p>
     </>
   );
