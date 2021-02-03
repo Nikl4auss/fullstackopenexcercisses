@@ -30,15 +30,14 @@ const Header = ({ course }) => {
 };
 
 const Content = ({ parts }) => {
-  console.log(parts);
   return (
     <>
       {parts.map((part) => {
         const { title, exercise } = part;
+        console.log(parts.indexOf(part) + 1);
         return (
           <>
-            <h2>{title}</h2>
-            <p>Exercises: {exercise}</p>
+            <Part key={title} title={title} exercise={exercise} />
           </>
         );
       })}
@@ -49,6 +48,15 @@ const Content = ({ parts }) => {
 const Total = ({ exercises }) => {
   const total = exercises.reduce((acc, element) => acc + element);
   return <h3>Total exercises: {total}</h3>;
+};
+
+const Part = ({ title, exercise }) => {
+  return (
+    <>
+      <h2>{title}</h2>
+      <p>Exercises: {exercise}</p>
+    </>
+  );
 };
 
 ReactDOM.render(<App />, document.getElementById("root"));
