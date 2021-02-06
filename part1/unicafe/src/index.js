@@ -75,21 +75,24 @@ const Stadistics = ({
   return (
     <>
       <h2>Stadistics</h2>
-      <Stadistic text={"good"} value={good} />
-      <Stadistic text={"neutral"} value={neutral} />
-      <Stadistic text={"bad"} value={bad} />
-      <Stadistic text={"all"} value={all()} />
-      <Stadistic text={"average"} value={average()} />
-      <Stadistic text={"Positive"} value={`${positivePorcentage()} %`} />
+      <table>
+        <Stadistic text={"good"} value={good} />
+        <Stadistic text={"neutral"} value={neutral} />
+        <Stadistic text={"bad"} value={bad} />
+        <Stadistic text={"all"} value={all()} />
+        <Stadistic text={"average"} value={average()} />
+        <Stadistic text={"Positive"} value={`${positivePorcentage()} %`} />
+      </table>
     </>
   );
 };
 
 const Stadistic = ({ text, value }) => {
   return (
-    <p>
-      {text} {value}
-    </p>
+    <tr>
+      <th>{text}</th>
+      <td>{value}</td>
+    </tr>
   );
 };
 
