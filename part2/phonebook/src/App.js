@@ -1,15 +1,24 @@
 import React, { useState } from "react";
+import NewContacts from "./components/NewContacts";
+import Numbers from "./components/Numbers";
+import Filtered from "./components/Filtered";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [filtered, setFiltered] = useState([]);
+  const [filter, setFilter] = useState("");
+  const [showFiltered, setShowFiltered] = useState(false);
+
   const handleNameChange = (event) => {
     setNewName(event.target.value);
   };
+
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
   };
+
   const addNewContact = (event) => {
     event.preventDefault();
     const contact = {
@@ -26,40 +35,48 @@ const App = () => {
       setNewNumber("");
     }
   };
+
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const changeFiltered = () => {
+    let filtered = persons.filter((person) => person.name === filter);
+    setFilter("");
+    setShowFiltered(true);
+    setFiltered(filtered);
+  };
+
+  const showAll = () => {
+    setShowFiltered(false);
+  };
+
   return (
     <div>
-      <h2>Phonebook</h2>
-      <h2>Add a new contact</h2>
-      <form>
-        <div>
-          name:{" "}
-          <input
-            onChange={handleNameChange}
-            value={newName}
-            placeholder="Add new contact"
-          />
-          <br />
-          number:{" "}
-          <input type="text" onChange={handleNumberChange} value={newNumber} />
-        </div>
-        <div>
-          <button onClick={addNewContact} type="submit">
-            add
-          </button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons.length === 0 ? (
-        <p>No contacts have been added yet</p>
-      ) : (
-        persons.map((person) => {
-          let { name, number } = person;
-          return (
-            <p key={name}>
-              {name} {number}
-            </p>
-          );
-        })
+      <h1>Phonebook</h1>
+      {persons.length === 0 ? null : (
+        <Filtered
+          filter={filter}
+          showFiltered={showFiltered}
+          handleFilterChange={handleFilterChange}
+          changeFiltered={changeFiltered}
+          showAll={showAll}
+        />
+      )}
+
+      <NewContacts
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+        newName={newName}
+        newNumber={newNumber}
+        addNewContact={addNewContact}
+      />
+      {persons.length === 0 ? null : (
+        <Numbers
+          persons={persons}
+          showFiltered={showFiltered}
+          filtered={filtered}
+        />
       )}
     </div>
   );
