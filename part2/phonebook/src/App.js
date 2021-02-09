@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import NewContacts from "./components/NewContacts";
 import Numbers from "./components/Numbers";
 import Filtered from "./components/Filtered";
@@ -50,6 +51,16 @@ const App = () => {
   const showAll = () => {
     setShowFiltered(false);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then((response) => {
+        let contacts = response.data;
+        return contacts;
+      })
+      .then((contacts) => setPersons(persons.concat(contacts)));
+  }, []);
 
   return (
     <div>
