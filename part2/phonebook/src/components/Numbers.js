@@ -1,20 +1,34 @@
-const Numbers = ({ persons, showFiltered, filtered }) => {
+const Numbers = ({ persons, showFiltered, filtered, handleDelete }) => {
   return (
     <>
       <h2>Numbers</h2>
       {showFiltered ? (
         <>
-          <p>
-            {filtered[0].name} {filtered[0].number}
-          </p>
+          {filtered.map((person, i) => {
+            return (
+              <>
+                <p key={person.id}>
+                  {person.name} {person.number}
+                </p>
+                <button onClick={() => handleDelete(person.id, person.name)}>
+                  delete
+                </button>
+              </>
+            );
+          })}
         </>
       ) : (
-        persons.map((person) => {
-          let { name, number } = person;
+        persons.map((person, i) => {
+          let { name, number, id } = person;
           return (
-            <p key={name}>
-              {name} {number}
-            </p>
+            <>
+              <p key={id}>
+                {name} {number}
+              </p>{" "}
+              <button key={i} onClick={() => handleDelete(id, name)}>
+                delete
+              </button>
+            </>
           );
         })
       )}

@@ -3,6 +3,7 @@ import axios from "axios";
 import NewContacts from "./components/NewContacts";
 import Numbers from "./components/Numbers";
 import Filtered from "./components/Filtered";
+import personService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -27,13 +28,36 @@ const App = () => {
       number: newNumber,
     };
     if (persons.some((person) => person.name === contact.name)) {
-      console.log(contact);
-      alert(`${contact.name} is already added to the phonebook`);
-      setNewName("");
+      let result = window.confirm(
+        `${contact.name} is already added to the phonebook, do you wish to change the current number?`
+      );
+      if (result) {
+        let oldContact = persons.filter(
+          (person) => person.name === contact.name
+        )[0];
+        personService
+          .updateContact(oldContact.id, contact)
+          .then((returnedContact) => {
+            setPersons(
+              persons.map((person) => {
+                return person.id !== returnedContact.id
+                  ? person
+                  : returnedContact;
+              })
+            );
+          });
+        setNewName("");
+        setNewNumber("");
+      } else {
+        alert("Nothing was changed");
+        setNewName("");
+      }
     } else {
-      setPersons(persons.concat(contact));
-      setNewName("");
-      setNewNumber("");
+      personService.createContact(contact).then((response) => {
+        setPersons(persons.concat(response));
+        setNewName("");
+        setNewNumber("");
+      });
     }
   };
 
@@ -42,25 +66,41 @@ const App = () => {
   };
 
   const changeFiltered = () => {
-    let filtered = persons.filter((person) => person.name === filter);
+    let filtered = persons.filter((person) => {
+      return person.name.includes(filter);
+    });
     setFilter("");
     setShowFiltered(true);
     setFiltered(filtered);
+    console.log(filtered);
   };
 
   const showAll = () => {
     setShowFiltered(false);
   };
 
+  const handleDelete = (id, name) => {
+    const result = window.confirm(`Are you sure you want to delte ${name}?`);
+    if (result) {
+      personService.deleteContact(id).then(() => {
+        personService.getContacts().then((response) => {
+          setPersons(response);
+        });
+      });
+    } else {
+      alert("Delete aborted");
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then((response) => {
-        let contacts = response.data;
-        return contacts;
-      })
-      .then((contacts) => setPersons(persons.concat(contacts)));
+    personService.getContacts().then((response) => {
+      setPersons(persons.concat(response));
+    });
   }, []);
+
+  useEffect(() => {
+    console.log(persons);
+  }, [persons]);
 
   return (
     <div>
@@ -87,6 +127,7 @@ const App = () => {
           persons={persons}
           showFiltered={showFiltered}
           filtered={filtered}
+          handleDelete={handleDelete}
         />
       )}
     </div>
