@@ -1,14 +1,3 @@
 {
-  "persons": [
-    {
-      "name": "Nicolas Marinelli",
-      "number": "1406",
-      "id": 1
-    },
-    {
-      "name": "Emanuel Marinelli",
-      "number": "13080809",
-      "id": 2
-    }
-  ]
+  "persons": []
 }

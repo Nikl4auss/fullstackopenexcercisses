@@ -6,31 +6,37 @@ const NewContacts = ({
   addNewContact,
 }) => {
   return (
-    <>
+    <div className="newContacts-container">
       <h2>Add a new contact</h2>
       <form>
         <div>
-          name:{" "}
+          <label for="name">name: </label>
           <input
+            className="field"
+            id="name"
+            name="name"
             onChange={handleNameChange}
             value={newName}
-            placeholder="Add new contact"
+            placeholder="example: Ana Carla"
           />
           <br />
-          number:{" "}
+          <label for="number">number: </label>
           <input
+            id="number"
+            name="number"
+            className="field"
             onChange={handleNumberChange}
             value={newNumber}
-            placeholder="Add a number"
+            placeholder="example: 111111"
           />
         </div>
         <div>
-          <button onClick={addNewContact} type="submit">
+          <button className="btn add" onClick={addNewContact} type="submit">
             add
           </button>
         </div>
       </form>
-    </>
+    </div>
   );
 };
 

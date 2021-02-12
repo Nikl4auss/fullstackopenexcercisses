@@ -1,16 +1,20 @@
 const Numbers = ({ persons, showFiltered, filtered, handleDelete }) => {
   return (
-    <>
-      <h2>Numbers</h2>
+    <div className="contacts-container">
+      <h2>Contacts</h2>
       {showFiltered ? (
         <>
           {filtered.map((person, i) => {
+            const { name, number, id } = person;
             return (
               <>
-                <p key={person.id}>
-                  {person.name} {person.number}
+                <p key={id}>
+                  {name} {number}
                 </p>
-                <button onClick={() => handleDelete(person.id, person.name)}>
+                <button
+                  className="btn delete"
+                  onClick={() => handleDelete(id, name)}
+                >
                   delete
                 </button>
               </>
@@ -25,14 +29,18 @@ const Numbers = ({ persons, showFiltered, filtered, handleDelete }) => {
               <p key={id}>
                 {name} {number}
               </p>{" "}
-              <button key={i} onClick={() => handleDelete(id, name)}>
+              <button
+                className="btn delete"
+                key={i}
+                onClick={() => handleDelete(id, name)}
+              >
                 delete
               </button>
             </>
           );
         })
       )}
-    </>
+    </div>
   );
 };
 

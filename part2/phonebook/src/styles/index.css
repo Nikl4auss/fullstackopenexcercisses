@@ -1,0 +1,159 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: auto;
+  height: auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+/* general styling */
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5rem;
+}
+
+label,
+input {
+  font-family: inherit;
+}
+
+.container {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 80%;
+}
+
+@media screen and (min-width: 600px) {
+  .container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: repeat(2, 1fr);
+    column-gap: 3rem;
+  }
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 700;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid black;
+  font-style: italic;
+}
+
+@media screen and (min-width: 600px) {
+  .title {
+    text-align: center;
+    grid-column: 2 / 3;
+  }
+  .filter-container {
+    text-align: center;
+    grid-column: 2 / 3;
+  }
+  .newContacts-container {
+    text-align: center;
+    grid-column: 2 / 3;
+  }
+  .contacts-container {
+    text-align: center;
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+  }
+}
+
+.filter-container,
+.newContacts-container,
+.contacts-container {
+  width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+}
+
+.btn {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 1rem;
+  padding: 1rem 0;
+  color: white;
+  letter-spacing: 0.2rem;
+  font-weight: 700;
+  margin: 1rem auto;
+}
+
+.add {
+  background-color: #51ff49;
+}
+
+.delete {
+  background-color: #ff2222;
+}
+
+.filter {
+  background-color: #cbcbcb;
+}
+
+.show {
+  background-color: #5f9eff;
+}
+
+label {
+  font-size: 1.5rem;
+}
+.field {
+  width: 100%;
+  margin: 1rem auto;
+  padding: 1rem 2rem;
+  background-color: #eee;
+  border: 1px solid #d0d0d0;
+  border-radius: 1rem;
+  outline: none;
+}
+
+.notification-box {
+  position: fixed;
+  top: 0;
+  text-align: center;
+  width: 100%;
+  color: #ffffff;
+  font-weight: 700;
+  transition: opacity 0.5s;
+}
+
+@media screen and (min-width: 600px) {
+  .notification-box {
+    width: 100%;
+    left: 50%;
+    margin-left: -50%;
+  }
+}
+
+.added {
+  background-color: hsla(117, 100%, 64%, 0.7);
+}
+
+.deleted {
+  background-color: hsla(0, 100%, 57%, 0.8);
+}
+
+.fadeout {
+  opacity: 0;
+}

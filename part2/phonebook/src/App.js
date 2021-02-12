@@ -4,7 +4,7 @@ import NewContacts from "./components/NewContacts";
 import Numbers from "./components/Numbers";
 import Filtered from "./components/Filtered";
 import personService from "./services/persons";
-
+import Notification from "./components/Notificationbox";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -12,6 +12,8 @@ const App = () => {
   const [filtered, setFiltered] = useState([]);
   const [filter, setFilter] = useState("");
   const [showFiltered, setShowFiltered] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [notificationType, setNotificationType] = useState(null);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -19,6 +21,15 @@ const App = () => {
 
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value);
+  };
+
+  const setMessage = (type, message) => {
+    setNotificationType(type);
+    setNotificationMessage(message);
+    setTimeout(() => {
+      setNotificationMessage(null);
+      setNotificationType(null);
+    }, 5000);
   };
 
   const addNewContact = (event) => {
@@ -48,6 +59,7 @@ const App = () => {
           });
         setNewName("");
         setNewNumber("");
+        setMessage("updated", `Updated ${contact.name}`);
       } else {
         alert("Nothing was changed");
         setNewName("");
@@ -57,6 +69,7 @@ const App = () => {
         setPersons(persons.concat(response));
         setNewName("");
         setNewNumber("");
+        setMessage("added", `Added ${contact.name}`);
       });
     }
   };
@@ -80,13 +93,21 @@ const App = () => {
   };
 
   const handleDelete = (id, name) => {
-    const result = window.confirm(`Are you sure you want to delte ${name}?`);
+    const result = window.confirm(`Are you sure you want to delete ${name}?`);
     if (result) {
-      personService.deleteContact(id).then(() => {
-        personService.getContacts().then((response) => {
-          setPersons(response);
+      personService
+        .deleteContact(id)
+        .then(() => {
+          personService.getContacts().then((response) => {
+            setPersons(response);
+          });
+        })
+        .catch((error) => {
+          setMessage("deleted", `${name} has already been deleted`);
+          setPersons(persons.filter((person) => person.id !== id));
         });
-      });
+      console.log(name);
+      setMessage("deleted", `${name} has been deleted`);
     } else {
       alert("Delete aborted");
     }
@@ -94,7 +115,7 @@ const App = () => {
 
   useEffect(() => {
     personService.getContacts().then((response) => {
-      setPersons(persons.concat(response));
+      setPersons(response);
     });
   }, []);
 
@@ -103,8 +124,9 @@ const App = () => {
   }, [persons]);
 
   return (
-    <div>
-      <h1>Phonebook</h1>
+    <div className="container">
+      <h1 className="title">Phonebook</h1>
+      <Notification type={notificationType} message={notificationMessage} />
       {persons.length === 0 ? null : (
         <Filtered
           filter={filter}
