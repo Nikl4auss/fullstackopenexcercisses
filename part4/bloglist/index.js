@@ -1,21 +1,14 @@
-const http = require("http");
+const config = require("./utils/config");
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const Blog = require("./modules/blog");
 
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number,
-});
+console.log(config.MONGODB_URI);
+console.log(config.PORT);
 
-const Blog = mongoose.model("Blog", blogSchema);
-
-const mongoUrl =
-  "mongodb+srv://bloglist:UsYMJ7MlCqVrrQSr@cluster0.sdanh.mongodb.net/blog-list?retryWrites=true&w=majority";
-mongoose.connect(mongoUrl, {
+mongoose.connect(config.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
@@ -43,7 +36,7 @@ app.post("/api/blogs", (request, response) => {
   });
 });
 
-const PORT = 3003;
+const PORT = config.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
