@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import NewContacts from "./components/NewContacts";
 import Numbers from "./components/Numbers";
 import Filtered from "./components/Filtered";
 import personService from "./services/persons";
+import loginService from "./services/login";
 import Notification from "./components/Notificationbox";
+import Login from "./components/Login";
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
@@ -14,6 +16,9 @@ const App = () => {
   const [showFiltered, setShowFiltered] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState(null);
   const [notificationType, setNotificationType] = useState(null);
+  const [user, setUser] = useState(null);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -113,6 +118,25 @@ const App = () => {
     }
   };
 
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      const user = await loginService.login({
+        username,
+        password,
+      });
+      window.localStorage.setItem("loggedPhonebookUser", JSON.stringify(user));
+      personService.setToken(user.token);
+      setUser(user);
+      setUsername("");
+      setPassword("");
+      setMessage("succes", `Welcome back ${user.username}`);
+    } catch (exception) {
+      setMessage("failed", "Wrong Credentials");
+    }
+    console.log("logged in with credentials", username, password);
+  };
+
   useEffect(() => {
     personService.getContacts().then((response) => {
       setPersons(response);
@@ -120,13 +144,33 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log(persons);
-  }, [persons]);
+    const loggedUser = window.localStorage.getItem("loggedPhonebookUser");
+    if (loggedUser) {
+      const user = JSON.parse(loggedUser);
+      setUser(user);
+      personService.setToken(user.token);
+    }
+  }, []);
 
   return (
     <div className="container">
       <h1 className="title">Phonebook</h1>
       <Notification type={notificationType} message={notificationMessage} />
+
+      {user === null ? (
+        <Login
+          username={username}
+          password={password}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          handleLogin={handleLogin}
+        />
+      ) : (
+        <>
+          <h3>Welcome {user.username}</h3>
+        </>
+      )}
+
       {persons.length === 0 ? null : (
         <Filtered
           filter={filter}
@@ -136,14 +180,16 @@ const App = () => {
           showAll={showAll}
         />
       )}
+      {user !== null ? (
+        <NewContacts
+          handleNameChange={handleNameChange}
+          handleNumberChange={handleNumberChange}
+          newName={newName}
+          newNumber={newNumber}
+          addNewContact={addNewContact}
+        />
+      ) : null}
 
-      <NewContacts
-        handleNameChange={handleNameChange}
-        handleNumberChange={handleNumberChange}
-        newName={newName}
-        newNumber={newNumber}
-        addNewContact={addNewContact}
-      />
       {persons.length === 0 ? null : (
         <Numbers
           persons={persons}

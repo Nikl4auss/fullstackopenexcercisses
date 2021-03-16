@@ -5,11 +5,14 @@ const Blog = require("../modules/blog");
 const User = require("../modules/user");
 
 blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate("user", {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+
+  const blogs = await Blog.find({ user: decodedToken.id }).populate("user", {
     username: 1,
     name: 1,
     id: 1,
   });
+
   response.json(blogs);
 });
 
@@ -44,23 +47,27 @@ blogsRouter.post("/", async (request, response) => {
 
 blogsRouter.delete("/:id", async (request, response) => {
   const token = request.token ? request.token : null;
+
   const decodedToken = jwt.verify(token, process.env.SECRET);
 
   const user = await User.findById(decodedToken.id);
 
-  console.log(user._id);
-
   const blog = await Blog.findById(request.params.id);
 
-  console.log(blog.user);
   if (blog.user.toString() === user._id.toString()) {
     await blog.remove();
+    user.blogs = user.blogs.filter(
+      (blog) => blog.id.toString() !== request.params.id.toString()
+    );
+    await user.save();
+    console.log("succeded");
     response.status(204).end();
   }
+  console.log("failed");
   response.status(204).end();
 });
 
-blogsRouter.put("/:id", async (request, response) => {
+blogsRouter.patch("/:id", async (request, response) => {
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
     { likes: request.body.likes },

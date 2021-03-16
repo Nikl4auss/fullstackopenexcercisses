@@ -18,7 +18,7 @@ const Newblog = ({ handleNewBlogs }) => {
     setUrl("");
   };
   return (
-    <div>
+    <div className="formDiv">
       <form onSubmit={addBlog}>
         <label htmlFor="title">title: </label>
         <input

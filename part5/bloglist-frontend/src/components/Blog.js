@@ -23,7 +23,7 @@ const Blog = ({ blog, handleUpdate, handleDelete }) => {
     handleDelete(blog.id, blog.title, blog.author);
   };
   return (
-    <div>
+    <div className="blog-container">
       {showMore ? (
         <>
           <p>
@@ -50,6 +50,7 @@ const Blog = ({ blog, handleUpdate, handleDelete }) => {
             onClick={() => {
               setShowMore(!showMore);
             }}
+            className="btn-show"
           >
             show more
           </button>{" "}
