@@ -9,6 +9,7 @@ import userServices from "./services/user";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState("");
 
   const loginRef = useRef();
   const newBlogRef = useRef();
@@ -20,13 +21,13 @@ const App = () => {
 
   const handleLogin = async (userCredentials) => {
     try {
-      loginRef.current.toggleVisibility();
+      // loginRef.current.toggleVisibility();
       const user = await userServices.login(userCredentials);
       window.localStorage.setItem("loggedBloglistUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
     } catch (exception) {
-      console.log(exception);
+      setNotification("wrong credentials");
     }
   };
 
@@ -62,15 +63,20 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    if (user) {
+      blogService.getAll().then((blogs) => setBlogs(blogs));
+    }
+  }, [user]);
 
   return (
     <div>
       {user === null ? (
-        <Toggeable buttonLabel="log in" ref={loginRef}>
-          <Login handleLogin={handleLogin} />
-        </Toggeable>
+        <>
+          <h1>{notification}</h1>
+          <Toggeable buttonLabel="log in" ref={loginRef}>
+            <Login handleLogin={handleLogin} />
+          </Toggeable>
+        </>
       ) : (
         <div>
           <p>
