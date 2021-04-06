@@ -6,12 +6,6 @@ import reducer from "./reducer";
 const store = createStore(reducer);
 
 const App = () => {
-  const good = () => {
-    store.dispatch({
-      type: "GOOD",
-    });
-  };
-
   return (
     <div>
       <button onClick={(e) => store.dispatch({ type: "GOOD" })}>good</button>
